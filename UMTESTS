@@ -1,0 +1,13 @@
+halt.um
+io.um
+add.um
+load-val.um
+multiply.um
+divide.um
+nand.um
+move.um
+map.um
+unmap.um
+seg-load.um
+seg-store.um
+load-prog.um

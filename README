@@ -1,0 +1,119 @@
+Joshua Mitchell and Ruchelly Almeida
+Comp 40 - Spring 2018
+Assignment 6
+
+
+Help received from TAs: Several TAs have helped us with different issues.
+
+We have implemented everything correctly.
+
+There are no significant departures from the design.
+
+Hours analysing assignment: 6
+Hours preparing design: 16
+Hours solving the problems after analysis: 25
+
+
+Architecture:
+
+Instructions.c: Does not implement any abstractions.
+                It relies on bitpack module to get certain values out of the  
+                32 bit instructions, on segments module to represent the 
+                segments in memory and on memory module to represent the 
+                segmented memory.
+                Doesn't know the implementaton of the modules it relies on, but
+                it has the ability to call the functions declared in their 
+                intefaces.
+                
+
+
+Segments.c: Implements an abstraction of a single segment in memory, therefore 
+            it knows all the contents of a segment struct.
+            Does not rely on any other module.
+
+
+Memory.c: Implements the abstraction of the segmented memory, therefore 
+          it knows all the contents of a memory struct.          
+          It relies on segments module.
+          Doesn't know the implementaton of the module it relies on, but it
+          has the ability to call the functions declared in its inteface.
+
+
+Um.c:  Does not implement any abstractions.
+       It relies on bitpack, instructions, memory and segments modules.
+       Does not know the implementaton of any of the modules it relies on, but  
+       it has the ability to call the functions declared in their intefaces.
+       
+
+
+Time to execute 50 million instructions: We run load-prog test, which has
+                                         ~50000000 instruction and it took
+                                         3.20 seconds to run it.
+
+
+Tests:
+
+  halt.um - tests if program is stopped when halt is called by calling halt.
+
+  io.um - tests if value inputted matched the outputed value by storing
+          user inputted value in register r3 and outputting the value 
+          in r3. 
+
+  add.um - tests if two values were added correctly by loading two
+           values, adding them and outputting the result.
+
+  load-val.um - tests if value loaded is correct by loading a value to 
+                a register and outputting the value in the register to
+                check for a match.
+
+  multiply.um - tests if result value of multiplying specified two
+                values is accurate by loading values, multiplying
+                them and outputting the result.
+
+  divide.um - tests if result value of dividing specified two values 
+              is accurate by loading two values, dividing them and
+              outputting it.
+
+  nand.um - tests if result value matches expected nand(value) by 
+            NANDing zero and zero and getting -1. Then we NAND -1
+            with itself and we expect the result to be 0. Then we
+            add 33 to the result, so we can output the ! value.
+
+  move.um -  our move test has register r2 get the value of 98 and register r3 
+             get 99 and uses the move condition so that if r3 isn't 0 then
+	     r1 should get the value of r2. r1 is outputted and it should be
+	     "b". r2 is then set to 103 and r3 is set to 0. The move 
+	     instruction is called again so that if r3 is 0 then r1 should
+	     get r2's value. r1 shouldn't change so it should be "b" again
+	     for the second output.
+
+  map.um - tests the map instruction by mapping several segments and outputting
+	   the segment identifier of the last segment mapped which should be
+	   "!"
+
+  unmap.um - tests if mapped segments are unmapped (free) by creating 
+             segments (calling map), unmapping them and checking if the
+	     segment identifier of the last segment mapped is what is expected
+	     by adding a certain value to the identifier to make it printable
+	     and then printing the value.
+	
+  seg-load.um - tests if value from memory was loaded correctly by loading in
+		a value equal to 10 from segment zero into a register, adding
+		23 to that register to make the value printable, and finally
+		outputs the value in the register which should be "!"
+                      
+
+  seg-store.um - tests if values were stored in memory correctly by
+                 mapping a segment with 100 words, storing the value
+                 97 into the mapped segment at an offset of 33 into 
+                 its sequence of words. Loads the value at same 
+                 location in memory into another register and outputs
+                 the value on this register. Output should be a. 
+	
+
+  load-prog.um - load-prog test has the register r1 get value 10000000 
+                 and uses the load-prog instruction to create a loop
+                 that decrements r1 by 1 each iteration and stops when
+                 r1 is 0.It adds 97 to r1 at the end and outputs r1,
+                 which should be "a".  
+
