@@ -156,8 +156,8 @@ void nand(uint32_t instruction, uint32_t *registers)
  */
 void map(uint32_t instruction, uint32_t *registers, memory mem)
 {
-        int a_ind, b_ind, c_ind;
-        parse_registers(instruction, &a_ind, &b_ind, &c_ind);
+        int b_ind = Bitpack_getu(instruction, 3, 3);
+        int c_ind = Bitpack_getu(instruction, 3, 0);
         
         segment seg = segment_new(registers[c_ind]);    
 
@@ -242,10 +242,8 @@ void input(uint32_t instruction, uint32_t *registers)
 void load_program(uint32_t instruction, uint32_t *registers,
                         memory mem, uint32_t *count)
 {
-        //(void) seg_zero;
-        
-        int a_ind, b_ind, c_ind;
-        parse_registers(instruction, &a_ind, &b_ind, &c_ind);
+        int b_ind = Bitpack_getu(instruction, 3, 3);
+        int c_ind = Bitpack_getu(instruction, 3, 0);
         
         if (registers[b_ind] == 0) {
                 *count = registers[c_ind] -1;
@@ -263,7 +261,6 @@ void load_program(uint32_t instruction, uint32_t *registers,
 
         segment_free(get_segment(0, mem));
         put_segment(new_seg, mem, 0);
-        //seg_zero = new_seg;
 
         *count = registers[c_ind] - 1;
 }
