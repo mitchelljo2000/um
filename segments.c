@@ -10,11 +10,13 @@
 
 #include "segments.h"
 
+/*
 struct segment {
         int capacity;
         int curr_index;
         uint32_t instructions[];
 };
+*/
 
 /*
  * segment_new takes an integer and creates a new segment struct with an array
@@ -71,10 +73,10 @@ void add_word(segment seg, uint32_t instruction, int index)
  *      seg: The segment struct
  *      index: The integer index into the array of instructions
  */
-uint32_t get_word(segment seg, int index)
-{
-        return seg->instructions[index];
-}
+//uint32_t get_word(segment seg, int index)
+//{
+//        return seg->instructions[index];
+//}
 
 /*
  * get_size takes a segment struct and returns the integer capacity of the

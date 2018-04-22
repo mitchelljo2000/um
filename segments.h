@@ -11,6 +11,11 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+struct segment {
+        int capacity;
+        int curr_index;
+        uint32_t instructions[];
+};
 typedef struct segment *segment;
 
 segment segment_new(int num_words);
@@ -19,7 +24,11 @@ void segment_free(segment seg);
 
 void add_word(segment seg, uint32_t instruction, int index);
 
-uint32_t get_word(segment seg, int index);
+static inline uint32_t get_word(segment seg, int index)
+{
+        return seg->instructions[index];
+}
+
 
 int get_size(segment seg);
 
