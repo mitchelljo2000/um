@@ -7,13 +7,21 @@
   * Creates a struct that holds a Hanson sequence containing segments as
   * values and 32-bit segment identifiers as their indices in the sequence
  */
-#include <stdio.h>
 #include "memory.h"
 
+// Function prototypes
+void expand_memory(memory mem);
+void expand_ids(memory mem);
+
 struct memory {
-        Seq_T segments_map;
-        Seq_T unmap_id;
+        segment *segments_map;
+        uint32_t *unmap_id;
         uint32_t curr_id;
+	uint32_t curr_id2;
+	uint32_t size;
+	uint32_t size2;
+	uint32_t capacity;
+	uint32_t capacity2;
 };
 
 /*
@@ -27,9 +35,14 @@ struct memory {
 memory create_memory(int hint)
 {
         memory mem = malloc(sizeof(*mem));
-        mem->segments_map = Seq_new(hint);
-        mem->unmap_id = Seq_new(hint);
+        mem->segments_map = malloc(hint * sizeof(*mem->segments_map));
+        mem->unmap_id = malloc(hint * sizeof(*mem->unmap_id));
         mem->curr_id = 0;
+	mem->curr_id2 = 0;
+	mem->size = 0;
+	mem->size2 = 0;
+	mem->capacity = hint;
+	mem->capacity2 = hint;
         return mem;
 }
 
@@ -45,8 +58,13 @@ memory create_memory(int hint)
  */
 void add_segment(segment seg, memory mem)
 {
-        Seq_addhi(mem->segments_map, (void *)seg);
-        mem->curr_id++;
+	 if (mem->size == mem->capacity) {
+                expand_memory(mem);
+        }
+
+        mem->segments_map[mem->curr_id] = seg;
+	mem->curr_id++;
+	mem->size++;
 }
 
 /*
@@ -59,7 +77,7 @@ void add_segment(segment seg, memory mem)
  */
 segment get_segment(uint32_t id, memory mem)
 {
-        segment seg = Seq_get(mem->segments_map, id);
+	segment seg = mem->segments_map[id];
         return seg;
 }
 
@@ -75,6 +93,7 @@ segment get_segment(uint32_t id, memory mem)
 void rem_segment(uint32_t id, memory mem)
 {
         segment_free(get_segment(id, mem));
+	mem->size--;
 }
 
 /*
@@ -87,16 +106,15 @@ void rem_segment(uint32_t id, memory mem)
  */
 void free_memory(memory mem)
 {
-        int size = get_mem_size(mem);
-        for (int i = 0; i < size; i++) {
-                segment seg = Seq_get(mem->segments_map, i);
+        for (uint32_t i = 0; i < mem->curr_id; i++) {
+                segment seg = mem->segments_map[i];
                 if (seg != NULL) {
                         segment_free(seg);
                 }
         }       
 
-        Seq_free(&(mem->segments_map));
-        Seq_free(&(mem->unmap_id));
+        free(mem->segments_map);
+	free(mem->unmap_id);
         free(mem);
 }
 
@@ -109,7 +127,7 @@ void free_memory(memory mem)
  */
 int get_mem_size(memory mem)
 {
-        return Seq_length(mem->segments_map);
+        return mem->size;
 }
 
 /*
@@ -122,7 +140,13 @@ int get_mem_size(memory mem)
  */
 void add_id(memory mem, uint32_t id)
 {
-        Seq_addlo(mem->unmap_id, (void *)(uintptr_t)id);
+	mem->unmap_id[mem->curr_id2] = id;
+	mem->curr_id2++;
+	mem->size2++;
+
+	if (mem->size2 == mem->capacity2) {
+		expand_ids(mem);
+	}
 }
 
 /*
@@ -134,7 +158,9 @@ void add_id(memory mem, uint32_t id)
  */
 uint32_t remove_id(memory mem)
 {
-        return (uint32_t)(uintptr_t)Seq_remlo(mem->unmap_id);
+        mem->size2--;
+        mem->curr_id2--;
+	return mem->unmap_id[mem->curr_id2];
 }
 
 /*
@@ -146,7 +172,7 @@ uint32_t remove_id(memory mem)
  */
 int get_num_unused(memory mem)
 {
-        return Seq_length(mem->unmap_id);
+	return mem->size2;
 }
 
 /*
@@ -161,7 +187,11 @@ int get_num_unused(memory mem)
  */
 void put_segment(segment seg, memory mem, uint32_t id)
 {
-        Seq_put(mem->segments_map, id, (void *) seg);
+	mem->segments_map[id] = seg;
+
+	if (seg != NULL) {
+		mem->size++;
+	}
 }
 
 /*
@@ -175,3 +205,46 @@ uint32_t get_curr_id(memory mem)
 {
         return mem->curr_id;
 }
+
+/*
+ * expand_memory takes a memory struct and expands the segments_map array
+ * within the struct
+ *
+ * Parameters:
+ * 	mem: The memory struct
+ */
+void expand_memory(memory mem)
+{
+	int size = mem->size;
+	segment *new_seg = malloc(2 * size * sizeof(segment));
+	for (int i = 0; i < size; i++) {
+		new_seg[i] = mem->segments_map[i];
+	}
+
+	free(mem->segments_map);
+
+	mem->segments_map = new_seg;
+	mem->capacity = 2 * size;
+}
+
+/*
+ * expand_ids takes a memory struct and expands the unmap_id array within the 
+ * struct
+ *
+ * Parameters:
+ *      mem: The memory struct
+ */
+void expand_ids(memory mem)
+{
+        int size = mem->size2;
+        uint32_t *new_ids = malloc(2 * size * sizeof(*new_ids));
+        for (int i = 0; i < size; i++) {
+                new_ids[i] = mem->unmap_id[i];
+	}
+
+        free(mem->unmap_id);
+
+        mem->unmap_id = new_ids;
+        mem->capacity2 = 2 * size;
+}
+

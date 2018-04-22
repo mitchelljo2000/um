@@ -103,7 +103,6 @@ void multiply(uint32_t instruction, uint32_t *registers)
         int a_ind, b_ind, c_ind;
         parse_registers(instruction, &a_ind, &b_ind, &c_ind);
 
-        //uint64_t temp = 1;
         registers[a_ind] = (registers[b_ind] * registers[c_ind]);
 }
 
