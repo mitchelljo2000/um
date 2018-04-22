@@ -13,6 +13,7 @@
 void expand_memory(memory mem);
 void expand_ids(memory mem);
 
+/*
 struct memory {
         segment *segments_map;
         uint32_t *unmap_id;
@@ -23,6 +24,7 @@ struct memory {
 	uint32_t capacity;
 	uint32_t capacity2;
 };
+*/
 
 /*
  * create_memory takes an integer and allocates and returns a memory struct
@@ -75,11 +77,10 @@ void add_segment(segment seg, memory mem)
  *      id: The uint32_t identifier
  *      mem: The memory struct
  */
-segment get_segment(uint32_t id, memory mem)
-{
-	segment seg = mem->segments_map[id];
-        return seg;
-}
+//segment get_segment(uint32_t id, memory mem)
+//{
+//        return mem->segments_map[id];
+//}
 
 /*
  * rem_segment takes a memory struct and a uint32_t as an index into the
