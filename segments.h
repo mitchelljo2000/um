@@ -29,7 +29,9 @@ static inline uint32_t get_word(segment seg, int index)
         return seg->instructions[index];
 }
 
-
-int get_size(segment seg);
+static inline int get_size(segment seg)
+{
+        return seg->capacity;
+}
 
 #endif

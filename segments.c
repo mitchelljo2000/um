@@ -85,7 +85,7 @@ void add_word(segment seg, uint32_t instruction, int index)
  * Parameters:
  *      seg: The segment struct
  */    
-int get_size(segment seg)
-{
-        return seg->capacity;
-}
+//int get_size(segment seg)
+//{
+//        return seg->capacity;
+//}
