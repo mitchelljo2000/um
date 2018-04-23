@@ -13,7 +13,7 @@ INCLUDES = $(shell echo *.h)
 
 ############### Rules ###############
 
-all: um writetests test
+all: um writetests
 
 
 ## Compile step (.c files -> .o files)
@@ -28,12 +28,9 @@ all: um writetests test
 um: um.o memory.o segments.o instructions.o bitpack.o
 	$(CC) $(LDFLAGS) $^ -o $@ $(LDLIBS)
 
-um.o: bitpack.h
+um.o: bitpack_opt.h
 
 writetests: umlabwrite.o umlab.o bitpack.o
-	$(CC) $(LDFLAGS) $^ -o $@ $(LDLIBS)
-
-test: test.o memory.o segments.o instructions.o bitpack.o
 	$(CC) $(LDFLAGS) $^ -o $@ $(LDLIBS)
 
 clean:

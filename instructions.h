@@ -1,7 +1,7 @@
  /*
   * Joshua Mitchell and Ruchelly Almeida
   * COMP 40 - Spring 2018
-  * Homework 6 - UM
+  * Homework 7 - UM
   * instructions.h
  */
 
@@ -10,7 +10,7 @@
 
 #include <stdio.h>
 #include "memory.h"
-#include "bitpack.h"
+#include "bitpack_opt.h"
 
 static inline void parse_registers(uint32_t instruction, int *a_ind, int *b_ind,
                                 int *c_ind)
@@ -32,7 +32,8 @@ static inline void load_segment(uint32_t instruction, uint32_t *registers,
         registers[a_ind] = get_word(seg, registers[c_ind]);
 }
 
-static inline void store_segment(uint32_t instruction, uint32_t *registers, memory mem)
+static inline void store_segment(uint32_t instruction, uint32_t *registers, 
+								memory mem)
 {
         int a_ind, b_ind, c_ind;
         parse_registers(instruction, &a_ind, &b_ind, &c_ind);

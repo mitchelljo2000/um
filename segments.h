@@ -1,7 +1,7 @@
 /*
   * Joshua Mitchell and Ruchelly Almeida
   * COMP 40 - Spring 2018
-  * Homework 6 - UM
+  * Homework 7 - Profile
   * segments.h
  */
 

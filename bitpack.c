@@ -1,7 +1,7 @@
 #include <inttypes.h>
 #include <stdio.h>
 #include <stdbool.h>
-#include "bitpack.h"
+#include "bitpack_opt.h"
 #include "except.h"
 #include "assert.h"
 

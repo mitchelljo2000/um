@@ -1,7 +1,7 @@
 /*
   * Joshua Mitchell and Ruchelly Almeida
   * COMP 40 - Spring 2018
-  * Homework 6 - UM
+  * Homework 7 - Profile
   * instructions.c
   *
   * Handles the instructions functions
@@ -10,7 +10,9 @@
 #include "instructions.h"
 
 // Function prototype
-//void parse_registers(uint32_t instruction, int *a_ind, int *b_ind, int *c_ind);
+/*
+void parse_registers(uint32_t instruction, int *a_ind, int *b_ind, int *c_ind);
+*/
 
 /*
  * move takes a 32 bit word and an array of uint32_t integers, representing 

@@ -1,7 +1,7 @@
 /*
   * Joshua Mitchell and Ruchelly Almeida
   * COMP 40 - Spring 2018
-  * Homework 6 - UM
+  * Homework 7 - Profile
   * um.c
   *
   * Reads 32 bit words in a file provided as command line argument and
@@ -15,7 +15,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <assert.h>
-#include "bitpack.h"
+#include "bitpack_opt.h"
 #include "instructions.h"
 
 #define REG_SIZE 8
