@@ -98,7 +98,7 @@ it.
 In our analysis, we first thought that the assembly code with the instructions
 nop and nopl were useless and possibly bad for performance. However, after
 further consideration and research, we determined that these instructions were
-necessary for the assembly code to be aligned properly.
+necessary for memory alignment.
 
 The next step in our analysis was determining whether or not the way that
 the xchg instruction was being called was useful or not. In the assembly code
