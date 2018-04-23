@@ -1,119 +1,138 @@
 Joshua Mitchell and Ruchelly Almeida
 Comp 40 - Spring 2018
-Assignment 6
+Homework 7
+
+We had help from various Ta's
+
+Assembly Code Analysis:
+
+Using valgrind and kcachegrind we found the part of our program that took the 
+most time was execute_instr function within the um module.
+
+The execute_instr function takes a 32 bit instruction, a boolean that is true
+if the program is supposed to stop, a uint32_t representing the current
+instruction to execute, a memory struct representing memory as a whole, and an
+array of uint32_t's representing the registers. As the name implies, the
+purpose of the function is to execute instructions. It does so by calling 
+Bitpack_getu to get the opcode of each instruction and using a switch statement
+to call various functions depending on the opcode.
+
+The assembly code for execute_instr can be seen below:
+
+0000000000000140 <execute_instr>:
+ 140:	48 89 f8             	mov    %rdi,%rax
+ 143:	49 89 c9             	mov    %rcx,%r9
+ 146:	48 c1 e0 20          	shl    $0x20,%rax
+ 14a:	48 c1 e8 3c          	shr    $0x3c,%rax
+ 14e:	83 f8 0d             	cmp    $0xd,%eax
+ 151:	0f 87 d9 00 00 00    	ja     230 <execute_instr+0xf0>
+ 157:	ff 24 c5 00 00 00 00 	jmpq   *0x0(,%rax,8)
+ 15e:	66 90                	xchg   %ax,%ax
+ 160:	48 89 d1             	mov    %rdx,%rcx
+ 163:	4c 89 c6             	mov    %r8,%rsi
+ 166:	4c 89 ca             	mov    %r9,%rdx
+ 169:	e9 00 00 00 00       	jmpq   16e <execute_instr+0x2e>
+ 16e:	66 90                	xchg   %ax,%ax
+ 170:	4c 89 c6             	mov    %r8,%rsi
+ 173:	e9 00 00 00 00       	jmpq   178 <execute_instr+0x38>
+ 178:	0f 1f 84 00 00 00 00 	nopl   0x0(%rax,%rax,1)
+ 17f:	00 
+ 180:	4c 89 c6             	mov    %r8,%rsi
+ 183:	e9 00 00 00 00       	jmpq   188 <execute_instr+0x48>
+ 188:	0f 1f 84 00 00 00 00 	nopl   0x0(%rax,%rax,1)
+ 18f:	00 
+ 190:	48 89 ca             	mov    %rcx,%rdx
+ 193:	4c 89 c6             	mov    %r8,%rsi
+ 196:	e9 00 00 00 00       	jmpq   19b <execute_instr+0x5b>
+ 19b:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)
+ 1a0:	48 89 ca             	mov    %rcx,%rdx
+ 1a3:	4c 89 c6             	mov    %r8,%rsi
+ 1a6:	e9 00 00 00 00       	jmpq   1ab <execute_instr+0x6b>
+ 1ab:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)
+ 1b0:	4c 89 c6             	mov    %r8,%rsi
+ 1b3:	e9 00 00 00 00       	jmpq   1b8 <execute_instr+0x78>
+ 1b8:	0f 1f 84 00 00 00 00 	nopl   0x0(%rax,%rax,1)
+ 1bf:	00 
+ 1c0:	4c 89 c6             	mov    %r8,%rsi
+ 1c3:	e9 00 00 00 00       	jmpq   1c8 <execute_instr+0x88>
+ 1c8:	0f 1f 84 00 00 00 00 	nopl   0x0(%rax,%rax,1)
+ 1cf:	00 
+ 1d0:	4c 89 c6             	mov    %r8,%rsi
+ 1d3:	e9 00 00 00 00       	jmpq   1d8 <execute_instr+0x98>
+ 1d8:	0f 1f 84 00 00 00 00 	nopl   0x0(%rax,%rax,1)
+ 1df:	00 
+ 1e0:	4c 89 c6             	mov    %r8,%rsi
+ 1e3:	e9 00 00 00 00       	jmpq   1e8 <execute_instr+0xa8>
+ 1e8:	0f 1f 84 00 00 00 00 	nopl   0x0(%rax,%rax,1)
+ 1ef:	00 
+ 1f0:	c6 06 01             	movb   $0x1,(%rsi)
+ 1f3:	c3                   	retq   
+ 1f4:	0f 1f 40 00          	nopl   0x0(%rax)
+ 1f8:	48 89 ca             	mov    %rcx,%rdx
+ 1fb:	4c 89 c6             	mov    %r8,%rsi
+ 1fe:	e9 00 00 00 00       	jmpq   203 <execute_instr+0xc3>
+ 203:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)
+ 208:	48 89 ca             	mov    %rcx,%rdx
+ 20b:	4c 89 c6             	mov    %r8,%rsi
+ 20e:	e9 00 00 00 00       	jmpq   213 <execute_instr+0xd3>
+ 213:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)
+ 218:	4c 89 c6             	mov    %r8,%rsi
+ 21b:	e9 00 00 00 00       	jmpq   220 <execute_instr+0xe0>
+ 220:	4c 89 c6             	mov    %r8,%rsi
+ 223:	e9 00 00 00 00       	jmpq   228 <execute_instr+0xe8>
+ 228:	0f 1f 84 00 00 00 00 	nopl   0x0(%rax,%rax,1)
+ 22f:	00 
+ 230:	f3 c3                	repz retq 
+ 232:	0f 1f 40 00          	nopl   0x0(%rax)
+ 236:	66 2e 0f 1f 84 00 00 	nopw   %cs:0x0(%rax,%rax,1)
+ 23d:	00 00 00 
+
+The assembly code before the switch statement starting at 157, is the function 
+call of Bitpack_getu. It isn't shown as a function call because it was inlined
+for performance.
+
+After thorough analysis of the assembly code of the switch statement, we
+concluded that there weren't very many changes that could be done to improve
+it.
+
+In our analysis, we first thought that the assembly code with the instructions
+nop and nopl were useless and possibly bad for performance. However, after
+further consideration and research, we determined that these instructions were
+necessary for the assembly code to be aligned properly.
+
+The next step in our analysis was determining whether or not the way that
+the xchg instruction was being called was useful or not. In the assembly code
+at 15e and 16e, the instruction "xchg %ax,%ax" was called. Our first thought
+was that this was a useless instruction because exchanging the contents of
+one register with itself wouldn't change the contents of the register. 
+After further research, we found that this seemingly useless instruction served
+a similar purpose as the nop instruction.
+
+The final step in our analysis was to look at the assembly code corresponding 
+to each case in the switch statement. What we found for the most part made
+sense. In each case the parameters corresponding to the function calls in each
+case were loaded into the correct registers for the function calls. There were,
+however, some areas where we thought instructions were being called needlessly
+and a small fix that could make the assembly code more compact.
+
+The instruction calls that we believe to be unecessary occurred in the case
+in the switch statement corresponding to the map instruction for the UM. The
+reason we determined there were unecessary instruction calls was because for
+all the other cases where the instruction, register array, and memory struct
+were parameters of the functions being called in the case, the same type and
+number of instructions called were the same (ignoring nop & nopl). In the map
+case, however, there were instructions that moved the constant 1 into register
+%rsi and returned something; both of which seemed unecessary.
+
+The small fix that we belive could make the assembly code more compact would
+be to pull out an instruction that occurs within every case of the switch
+statement. Within every case, the instruction "mov %r8,%rsi" occurs. This is
+loading the value of the 5th parameter, the register array, into register
+%rsi so that it can be passed as the second argument for the function calls
+in the switch statement. Since this occurs in every case, it should be pulled
+out of the switch statement so that it is only called once.
 
 
-Help received from TAs: Several TAs have helped us with different issues.
+We have spent 3 hours analysing problems posed in the assignment.
 
-We have implemented everything correctly.
-
-There are no significant departures from the design.
-
-Hours analysing assignment: 6
-Hours preparing design: 16
-Hours solving the problems after analysis: 25
-
-
-Architecture:
-
-Instructions.c: Does not implement any abstractions.
-                It relies on bitpack module to get certain values out of the  
-                32 bit instructions, on segments module to represent the 
-                segments in memory and on memory module to represent the 
-                segmented memory.
-                Doesn't know the implementaton of the modules it relies on, but
-                it has the ability to call the functions declared in their 
-                intefaces.
-                
-
-
-Segments.c: Implements an abstraction of a single segment in memory, therefore 
-            it knows all the contents of a segment struct.
-            Does not rely on any other module.
-
-
-Memory.c: Implements the abstraction of the segmented memory, therefore 
-          it knows all the contents of a memory struct.          
-          It relies on segments module.
-          Doesn't know the implementaton of the module it relies on, but it
-          has the ability to call the functions declared in its inteface.
-
-
-Um.c:  Does not implement any abstractions.
-       It relies on bitpack, instructions, memory and segments modules.
-       Does not know the implementaton of any of the modules it relies on, but  
-       it has the ability to call the functions declared in their intefaces.
-       
-
-
-Time to execute 50 million instructions: We run load-prog test, which has
-                                         ~50000000 instruction and it took
-                                         3.20 seconds to run it.
-
-
-Tests:
-
-  halt.um - tests if program is stopped when halt is called by calling halt.
-
-  io.um - tests if value inputted matched the outputed value by storing
-          user inputted value in register r3 and outputting the value 
-          in r3. 
-
-  add.um - tests if two values were added correctly by loading two
-           values, adding them and outputting the result.
-
-  load-val.um - tests if value loaded is correct by loading a value to 
-                a register and outputting the value in the register to
-                check for a match.
-
-  multiply.um - tests if result value of multiplying specified two
-                values is accurate by loading values, multiplying
-                them and outputting the result.
-
-  divide.um - tests if result value of dividing specified two values 
-              is accurate by loading two values, dividing them and
-              outputting it.
-
-  nand.um - tests if result value matches expected nand(value) by 
-            NANDing zero and zero and getting -1. Then we NAND -1
-            with itself and we expect the result to be 0. Then we
-            add 33 to the result, so we can output the ! value.
-
-  move.um -  our move test has register r2 get the value of 98 and register r3 
-             get 99 and uses the move condition so that if r3 isn't 0 then
-	     r1 should get the value of r2. r1 is outputted and it should be
-	     "b". r2 is then set to 103 and r3 is set to 0. The move 
-	     instruction is called again so that if r3 is 0 then r1 should
-	     get r2's value. r1 shouldn't change so it should be "b" again
-	     for the second output.
-
-  map.um - tests the map instruction by mapping several segments and outputting
-	   the segment identifier of the last segment mapped which should be
-	   "!"
-
-  unmap.um - tests if mapped segments are unmapped (free) by creating 
-             segments (calling map), unmapping them and checking if the
-	     segment identifier of the last segment mapped is what is expected
-	     by adding a certain value to the identifier to make it printable
-	     and then printing the value.
-	
-  seg-load.um - tests if value from memory was loaded correctly by loading in
-		a value equal to 10 from segment zero into a register, adding
-		23 to that register to make the value printable, and finally
-		outputs the value in the register which should be "!"
-                      
-
-  seg-store.um - tests if values were stored in memory correctly by
-                 mapping a segment with 100 words, storing the value
-                 97 into the mapped segment at an offset of 33 into 
-                 its sequence of words. Loads the value at same 
-                 location in memory into another register and outputs
-                 the value on this register. Output should be a. 
-	
-
-  load-prog.um - load-prog test has the register r1 get value 10000000 
-                 and uses the load-prog instruction to create a loop
-                 that decrements r1 by 1 each iteration and stops when
-                 r1 is 0.It adds 97 to r1 at the end and outputs r1,
-                 which should be "a".  
-
+We have spent 17 hours solving the problems after analysing it.

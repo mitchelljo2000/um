@@ -10,7 +10,7 @@
 #include "instructions.h"
 
 // Function prototype
-void parse_registers(uint32_t instruction, int *a_ind, int *b_ind, int *c_ind);
+//void parse_registers(uint32_t instruction, int *a_ind, int *b_ind, int *c_ind);
 
 /*
  * move takes a 32 bit word and an array of uint32_t integers, representing 
@@ -43,14 +43,14 @@ void move(uint32_t instruction, uint32_t *registers)
  *      registers: The array of uint32_t integers representing the registers
  *      memory: The memory struct representing memory
  */
-void load_segment(uint32_t instruction, uint32_t *registers, memory mem)
-{
-        int a_ind, b_ind, c_ind;
-        parse_registers(instruction, &a_ind, &b_ind, &c_ind);
-
-        segment seg = get_segment(registers[b_ind], mem);
-        registers[a_ind] = get_word(seg, registers[c_ind]);
-}
+//void load_segment(uint32_t instruction, uint32_t *registers, memory mem)
+//{
+//        int a_ind, b_ind, c_ind;
+//        parse_registers(instruction, &a_ind, &b_ind, &c_ind);
+//
+//        segment seg = get_segment(registers[b_ind], mem);
+//        registers[a_ind] = get_word(seg, registers[c_ind]);
+//}
 
 /*
  * store_segment takes a 32 bit word an array of uint32_t integers, representing
@@ -64,6 +64,7 @@ void load_segment(uint32_t instruction, uint32_t *registers, memory mem)
  *      registers: The array of uint32_t integers representing the registers
  *      memory: The memory struct representing memory
  */
+/*
 void store_segment(uint32_t instruction, uint32_t *registers, memory mem)
 {
         int a_ind, b_ind, c_ind;
@@ -72,6 +73,7 @@ void store_segment(uint32_t instruction, uint32_t *registers, memory mem)
         segment seg = get_segment(registers[a_ind], mem);
         add_word(seg, registers[c_ind], registers[b_ind]);
 }
+*/
 
 /*
  * add takes a 32 bit word and an array of uint32_t integers, representing 
@@ -273,11 +275,11 @@ void load_program(uint32_t instruction, uint32_t *registers,
  *      instruction: The 32 bit word
  *      registers: The array of uint32_t integers representing the registers
  */
-void load_value(uint32_t instruction, uint32_t *registers)
-{
-        int index = Bitpack_getu(instruction, 3, 25);
-        registers[index] = Bitpack_getu(instruction, 25, 0);
-}
+//void load_value(uint32_t instruction, uint32_t *registers)
+//{
+//        int index = Bitpack_getu(instruction, 3, 25);
+//        registers[index] = Bitpack_getu(instruction, 25, 0);
+//}
 
 /*
  * parse_registers takes a 32 bit word and pointers to the integer indexes
@@ -290,10 +292,10 @@ void load_value(uint32_t instruction, uint32_t *registers)
  *      b_ind: A pointer to the integer index or $r[B]
  *      c_ind: A pointer to the integer index or $r[C]
  */
-inline void parse_registers(uint32_t instruction, int *a_ind, int *b_ind, 
-                                int *c_ind)
-{
-        *a_ind = Bitpack_getu(instruction, 3, 6);
-        *b_ind = Bitpack_getu(instruction, 3, 3);
-        *c_ind = Bitpack_getu(instruction, 3, 0);
-}
+//inline void parse_registers(uint32_t instruction, int *a_ind, int *b_ind, 
+//                                int *c_ind)
+//{
+//        *a_ind = Bitpack_getu(instruction, 3, 6);
+//        *b_ind = Bitpack_getu(instruction, 3, 3);
+//        *c_ind = Bitpack_getu(instruction, 3, 0);
+//}
